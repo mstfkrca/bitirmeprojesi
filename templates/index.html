@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emlak Avcısı | Premium V2</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-body: #f3f4f6;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.07);
+            
+            --text-dark: #111827;
+            --text-muted: #6b7280;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --danger: #ef4444;
+            --danger-hover: #dc2828;
+            --success: #10b981;
+            
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --radius-xl: 30px;
+            --font-main: 'Inter', sans-serif;
+            --font-head: 'Outfit', sans-serif;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-body: #0f172a;
+                --glass-bg: rgba(30, 41, 59, 0.6);
+                --glass-border: rgba(255, 255, 255, 0.1);
+                --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+                --text-dark: #f8fafc;
+                --text-muted: #94a3b8;
+                --primary: #60a5fa;
+                --primary-hover: #3b82f6;
+            }
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-body);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-container {
+            display: flex;
+            flex-wrap: nowrap;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 320px; /* Biraz küçültüldü alan açmak için */
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-right: 1px solid var(--glass-border);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+            z-index: 10;
+        }
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+
+        .brand {
+            font-family: var(--font-head);
+            font-size: 2.2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+            text-align: center;
+            letter-spacing: -1px;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 18px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .glass-panel h3 { font-size: 1.1rem; font-weight: 700; color: var(--text-dark); margin-bottom: 2px; display:flex; align-items:center; gap:8px;}
+
+        .input-group { display: flex; flex-direction: column; gap: 6px; }
+        label { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;}
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-dark);
+            font-family: var(--font-main);
+            outline: none;
+            transition: var(--transition);
+        }
+        select {
+            cursor: pointer; appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>');
+            background-repeat: no-repeat; background-position: right 14px center; background-size: 16px;
+            font-weight: 500;
+        }
+        @media (prefers-color-scheme: dark) { 
+            input[type="text"], input[type="number"], select { background: rgba(0,0,0,0.2); } 
+            select option { background-color: var(--bg-body); color: var(--text-dark); }
+        }
+        @media (prefers-color-scheme: light) { 
+            select option { background-color: white; color: black; }
+        }
+        input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
+        
+        button {
+            padding: 12px 18px;
+            border-radius: var(--radius-md);
+            font-family: var(--font-main);
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3); }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);}
+        .btn-danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); }
+        .btn-danger:hover { background: var(--danger); color: white; }
+        .btn-outline { background: transparent; color: var(--text-dark); border: 1px solid var(--glass-border); text-decoration: none;}
+        .btn-outline:hover { background: rgba(0,0,0,0.05); }
+        @media (prefers-color-scheme: dark) { .btn-outline:hover { background: rgba(255,255,255,0.05); } }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            position: relative;
+        }
+        .main-content::-webkit-scrollbar { width: 8px; }
+        .main-content::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 10px; }
+        @media (prefers-color-scheme: dark) { .main-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); } }
+
+        .topbar { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px; }
+        .topbar h2 { font-family: var(--font-head); font-size: 2.5rem; font-weight: 800; color: var(--text-dark); line-height: 1;}
+        .topbar p { color: var(--text-muted); font-size: 1rem; margin-top: 5px; font-weight: 500;}
+        .badge { background: rgba(59, 130, 246, 0.15); color: var(--primary); padding: 8px 16px; border-radius: 30px; font-weight: 700; font-size: 0.95rem; border: 1px solid rgba(59, 130, 246, 0.3);}
+
+        .flash-messages { margin-bottom: 25px; }
+        .alert {
+            padding: 16px 20px; border-radius: var(--radius-md); margin-bottom: 15px;
+            font-weight: 500; display: flex; align-items: center; gap: 12px;
+            animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(-20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        .alert-success { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
+        .alert-danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); }
+        .alert-info { background: rgba(59, 130, 246, 0.15); color: var(--primary); border: 1px solid rgba(59, 130, 246, 0.3); }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 30px; }
+        .card { background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: var(--radius-xl); overflow: hidden; box-shadow: var(--glass-shadow); transition: var(--transition); display: flex; flex-direction: column; }
+        .card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.12); border-color: rgba(59, 130, 246, 0.4); }
+        
+        .card-img-wrap { position: relative; height: 240px; overflow: hidden; cursor: crosshair; }
+        .card-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); }
+        .card:hover .card-img-wrap img { transform: scale(1.08); }
+        
+        .location-tag { position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.65); color: #fff; padding: 6px 14px; border-radius: 30px; font-size: 0.85rem; font-weight: 600; backdrop-filter: blur(8px); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .id-tag { position: absolute; bottom: 15px; right: 15px; background: var(--primary); color: #fff; padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; box-shadow: 0 4px 10px rgba(59,130,246,0.4); }
+
+        .card-body { padding: 25px; display: flex; flex-direction: column; flex-grow: 1; gap: 15px;}
+        .card-title { font-size: 1.15rem; font-weight: 700; color: var(--text-dark); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .card-price { font-family: var(--font-head); font-size: 1.8rem; color: var(--success); font-weight: 800; }
+        .card-header-row { display: flex; justify-content: space-between; align-items: flex-end; }
+        .card-date { font-size: 0.8rem; color: var(--text-muted); font-weight: 500;}
+
+        .specs-grid { display: grid; background: rgba(0,0,0,0.03); padding: 10px; border-radius: var(--radius-md); border: 1px solid rgba(0,0,0,0.05); }
+        @media (prefers-color-scheme: dark) { .specs-grid { background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.05);} }
+        
+        .spec-item { display: flex; flex-direction: column; font-size: 0.85rem; padding: 4px; text-align: center;}
+        .spec-item span { color: var(--text-muted); font-weight: 500; font-size: 0.75rem; text-transform: uppercase;}
+        .spec-item strong { color: var(--text-dark); font-weight: 700; font-size: 0.95rem; margin-top: 2px;}
+
+        .extended-specs { display: grid; grid-template-columns: 1fr; gap: 6px; margin-bottom: 15px; background: rgba(0,0,0,0.02); padding: 10px; border-radius: var(--radius-md);}
+        @media (prefers-color-scheme: dark) { .extended-specs { background: rgba(255,255,255,0.02); } }
+        .extended-specs div { display: flex; justify-content: space-between; font-size: 0.85rem; border-bottom: 1px dashed rgba(0,0,0,0.05); padding-bottom: 4px;}
+        @media (prefers-color-scheme: dark) { .extended-specs div { border-bottom-color: rgba(255,255,255,0.05); } }
+        .extended-specs span { color: var(--text-muted); }
+        .extended-specs strong { color: var(--text-dark); text-align: right; max-width: 60%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+
+        .details-expander { background: rgba(0,0,0,0.02); border-radius: var(--radius-md); padding: 12px 15px; border: 1px solid transparent; transition: 0.3s;}
+        .details-expander:hover { border-color: var(--glass-border); }
+        .details-expander summary { font-size: 0.95rem; font-weight: 600; cursor: pointer; color: var(--primary); outline:none; display: flex; align-items: center; justify-content: space-between;}
+        .details-expander summary::after { content: '+'; font-size: 1.2rem; font-weight: 400; transition: 0.3s;}
+        .details-expander[open] summary::after { transform: rotate(45deg); }
+        .details-content { margin-top: 12px; font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; max-height: 180px; overflow-y: auto; white-space: pre-line; padding-right: 5px;}
+        .details-content::-webkit-scrollbar { width: 4px; }
+        .details-content::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+        @media (prefers-color-scheme: dark) { .details-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); } }
+
+        .card-actions { display: flex; gap: 12px; margin-top: auto; padding-top: 10px; }
+        .btn-link {
+            flex: 1; display: inline-flex; align-items: center; justify-content: center;
+            background: var(--text-dark); color: var(--bg-body); text-decoration: none;
+            padding: 12px; border-radius: var(--radius-md); font-weight: 600; font-size: 0.95rem; transition: var(--transition);
+        }
+        .btn-link:hover { opacity: 0.85; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2);}
+        .btn-icon-del {
+            background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2);
+            width: 48px; height: 48px; padding: 0; border-radius: var(--radius-md); cursor: pointer; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .btn-icon-del:hover { background: var(--danger); color: white; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);}
+
+        /* Pagination Styles */
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 40px; padding-bottom: 20px;}
+        .page-btn { background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--glass-border); padding: 10px 18px; border-radius: var(--radius-md); color: var(--primary); font-weight: 700; text-decoration: none; transition: 0.2s; box-shadow: 0 4px 15px rgba(0,0,0,0.03);}
+        .page-btn:hover:not(.disabled) { background: var(--primary); color: white; transform: translateY(-2px); border-color: transparent;}
+        .page-btn.disabled { opacity: 0.4; cursor: not-allowed; color: var(--text-muted); background: rgba(0,0,0,0.02);}
+        .page-info { font-weight: 700; color: var(--text-dark); font-size: 1rem; background: var(--glass-bg); padding: 10px 18px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); font-family: var(--font-head);}
+
+        /* Floating Bot Status */
+        #bot-status { position: fixed; bottom: 40px; right: 40px; z-index: 50; background: var(--glass-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(59, 130, 246, 0.4); border-radius: var(--radius-lg); padding: 24px; width: 360px; box-shadow: 0 15px 50px rgba(0,0,0,0.2); display: none; flex-direction: column; gap: 15px; animation: slideUpBounce 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); border-left: 4px solid var(--primary); }
+        @keyframes slideUpBounce { 0% { transform: translateY(80px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+        .status-header { display: flex; align-items: center; gap: 12px; font-weight: 800; color: var(--text-dark); font-size: 1.1rem;}
+        .spinner { width: 24px; height: 24px; border: 3px solid rgba(59, 130, 246, 0.2); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .status-msg { font-size: 0.95rem; color: var(--text-muted); line-height: 1.5; font-weight: 500;}
+
+        .empty-state { grid-column: 1 / -1; text-align: center; padding: 100px 20px; background: var(--glass-bg); border-radius: var(--radius-xl); border: 1px dashed var(--glass-border); backdrop-filter: blur(10px);}
+        .empty-state h3 { font-size: 1.8rem; font-family: var(--font-head); color: var(--text-dark); margin-bottom: 12px; }
+        .empty-state p { color: var(--text-muted); font-size: 1.1rem;}
+
+        /* Lightbox */
+        #image-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100; display: none; justify-content: center; align-items: center; padding: 40px; backdrop-filter: blur(10px); opacity: 0; transition: opacity 0.3s; }
+        #image-overlay.open { display: flex; opacity: 1; }
+        #image-overlay img { max-width: 90vw; max-height: 90vh; border-radius: var(--radius-lg); box-shadow: 0 0 60px rgba(0,0,0,0.6); transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);}
+        #image-overlay.open img { transform: scale(1); }
+        .close-lightbox { position: absolute; top: 30px; right: 40px; color: white; font-size: 3rem; cursor: pointer; opacity: 0.7; transition: 0.2s; background: none; border: none;}
+        .close-lightbox:hover { opacity: 1; transform: scale(1.1); }
+
+        @media (max-width: 1024px) {
+            .app-container { flex-direction: column; height: auto; overflow: visible;}
+            .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--glass-border); position: relative; z-index: 1;}
+            .main-content { padding: 30px 20px; overflow-y: visible;}
+            #bot-status { bottom: 20px; right: 20px; width: calc(100% - 40px); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="brand">Emlak Avcısı</div>
+
+        <!-- TARAMA EKRANI -->
+        <div class="glass-panel">
+            <h3><span>🚀</span> Yeni İlan Tara</h3>
+            <form method="POST" action="{{ url_for('ana_sayfa') }}" style="display: flex; flex-direction: column; gap: 12px;">
+                <div class="input-group">
+                    <label>Sahibinden URL'si</label>
+                    <input type="text" name="ilan_linki" placeholder="https://www.sahibinden.com/kategori..." required>
+                </div>
+                <div class="input-group" style="margin-bottom: 5px;">
+                    <label>Limit (Maks. İlan)</label>
+                    <input type="number" name="limit" value="200" min="1" max="1000">
+                </div>
+                <button type="submit" name="baslat" class="btn-primary" id="start-btn">Botu Başlat</button>
+            </form>
+        </div>
+
+        <!-- YENİ DROPDOWN FİLTRELEME EKRANI -->
+        <div class="glass-panel">
+            <h3><span>🔍</span> Sonuçları Filtrele</h3>
+            <form method="GET" action="{{ url_for('ana_sayfa') }}" style="display: flex; flex-direction: column; gap: 12px;">
+                
+                <div class="input-group">
+                    <label>Bölge Seç</label>
+                    <select name="lokasyon">
+                        <option value="">Tüm Bölgeler</option>
+                        {% for lok in lokasyonlar %}
+                            <option value="{{ lok }}" {% if lok == lokasyon_filtre %}selected{% endif %}>{{ lok }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                    <div class="input-group" style="flex:1;">
+                        <label>Oda Sayısı</label>
+                        <select name="oda">
+                            <option value="">Tümü</option>
+                            {% for oda in odalar %}
+                                <option value="{{ oda }}" {% if oda == oda_filtre %}selected{% endif %}>{{ oda }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="input-group" style="flex:1.5;">
+                        <label>Fiyat Aralığı</label>
+                        <select name="fiyat_araligi">
+                            <option value="">Farketmez</option>
+                            <option value="0-2M" {% if fiyat_araligi == '0-2M' %}selected{% endif %}>0 - 2 Milyon</option>
+                            <option value="2M-5M" {% if fiyat_araligi == '2M-5M' %}selected{% endif %}>2 - 5 Milyon</option>
+                            <option value="5M-10M" {% if fiyat_araligi == '5M-10M' %}selected{% endif %}>5 - 10 Milyon</option>
+                            <option value="10M+" {% if fiyat_araligi == '10M+' %}selected{% endif %}>10+ Milyon</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-group" style="margin-bottom: 5px;">
+                    <label>Kelime Arama</label>
+                    <input type="text" name="q" placeholder="Örn: Deniz Manzaralı..." value="{{ search_q }}">
+                </div>
+
+                <div style="display:flex; gap: 10px;">
+                    <button type="submit" class="btn-primary" style="flex: 2; box-shadow: none;">Uygula</button>
+                    <a href="{{ url_for('ana_sayfa') }}" class="btn-outline" style="flex: 1; text-align:center; padding:12px;">Sıfırla</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- TÜMÜNÜ SİL EKRANI -->
+        <div class="glass-panel" style="border-color: rgba(239, 68, 68, 0.2); background: rgba(239, 68, 68, 0.02);">
+            <h3 style="color: var(--danger);"><span>⚠️</span> Tehlikeli Bölge</h3>
+            <form method="POST" action="{{ url_for('ana_sayfa') }}">
+                <button type="submit" name="temizle" class="btn-danger" style="width: 100%;" onclick="return confirm('Tüm arşivi (Veritabanı + Resimler) SİLMEK istediğine emin misin? Bu işlem geri alınamaz!');">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px;"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6"/></svg>
+                    Tüm Arşivi Yok Et
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <div class="topbar">
+            <div>
+                <h2>Keşfedilen İlanlar</h2>
+                <p>Belirlediğiniz kriterlerdeki en güncel fırsatlar.</p>
+            </div>
+            {% if total_ilan %}
+                <div class="badge">{{ total_ilan }} Sonuç Bulundu</div>
+            {% endif %}
+        </div>
+
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {% if category == 'success' %}✅{% elif category == 'danger' %}❌{% else %}ℹ️{% endif %}
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <div class="grid">
+            {% for ilan in ilanlar %}
+            <div class="card">
+                <div class="card-img-wrap" onclick="showImage('/screenshots/{{ ilan.resim_yolu }}')">
+                    <img src="/screenshots/{{ ilan.resim_yolu }}" alt="İlan Resmi" loading="lazy">
+                    <div class="location-tag">📍 {{ ilan.lokasyon }}</div>
+                    <div class="id-tag">#{{ ilan.ilan_no }}</div>
+                </div>
+
+                <div class="card-body">
+                    <h3 class="card-title" title="{{ ilan.baslik }}">{{ ilan.baslik }}</h3>
+                    <div class="card-header-row"><div class="card-price">{{ ilan.fiyat }}</div></div>
+                    <div class="card-date">📅 {{ ilan.tarih }}</div>
+
+                    <div class="specs-grid" style="grid-template-columns: repeat(4, 1fr); gap: 5px;">
+                        <div class="spec-item"><span>Oda</span> <strong>{{ ilan.oda_sayisi }}</strong></div>
+                        <div class="spec-item"><span>M²(B/N)</span> <strong>{{ ilan.m2_brut }}/{{ ilan.m2_net }}</strong></div>
+                        <div class="spec-item"><span>Kat</span> <strong>{{ ilan.bulundugu_kat }}/{{ ilan.kat_sayisi }}</strong></div>
+                        <div class="spec-item"><span>Yaş</span> <strong>{{ ilan.bina_yasi }}</strong></div>
+                    </div>
+                    
+                    <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-dark); text-align: right; margin-top: -5px; padding-bottom: 5px;">
+                        Kimden: <span style="color: var(--primary);">{{ ilan.kimden }}</span>
+                    </div>
+
+                    <details class="details-expander" open>
+                        <summary>Tüm Özellikler & Açıklama</summary>
+                        <div class="details-content">
+                            <div class="extended-specs">
+                                <div><span>İlan Tarihi:</span> <strong>{{ ilan.ilan_tarihi }}</strong></div>
+                                <div><span>Emlak Tipi:</span> <strong>{{ ilan.emlak_tipi }}</strong></div>
+                                <div><span>Isıtma:</span> <strong title="{{ ilan.isitma }}">{{ ilan.isitma }}</strong></div>
+                                <div><span>Banyo:</span> <strong>{{ ilan.banyo_sayisi }}</strong></div>
+                                <div><span>Balkon:</span> <strong>{{ ilan.balkon }}</strong></div>
+                                <div><span>Asansör:</span> <strong>{{ ilan.asansor }}</strong></div>
+                                <div><span>Otopark:</span> <strong title="{{ ilan.otopark }}">{{ ilan.otopark }}</strong></div>
+                                <div><span>Eşyalı:</span> <strong>{{ ilan.esyali }}</strong></div>
+                                <div><span>Site İçi:</span> <strong>{{ ilan.site_icerisinde }}</strong></div>
+                                <div><span>Site Adı:</span> <strong title="{{ ilan.site_adi }}">{{ ilan.site_adi }}</strong></div>
+                                <div><span>Tapu Durumu:</span> <strong title="{{ ilan.tapu_durumu }}">{{ ilan.tapu_durumu }}</strong></div>
+                                <div><span>Takas:</span> <strong>{{ ilan.takas }}</strong></div>
+                            </div>
+                            <hr style="border:0; border-top:1px dashed rgba(0,0,0,0.1); margin: 15px 0;">
+                            <div style="white-space: pre-line;">{{ ilan.aciklama }}</div>
+                        </div>
+                    </details>
+
+                    <div class="card-actions">
+                        <a href="{{ ilan.link }}" target="_blank" class="btn-link">Sitede İncele ↗</a>
+                        <form method="POST" action="{{ url_for('ana_sayfa') }}" style="display: inline-block;">
+                            <input type="hidden" name="sil_ilan_id" value="{{ ilan.ilan_no }}">
+                            <button type="submit" name="tek_sil" class="btn-icon-del" title="İlanı Sil" onclick="return confirm('Bu ilanı tamamen silmek istiyor musunuz?');">
+                                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6"/></svg>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <h3>Arama Sonucu Bulunamadı 🏚️</h3>
+                <p>Belirlediğiniz seçeneklerde sonuç yok veya veritabanı boş.</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- SAYFALAMA (PAGINATION) BÖLÜMÜ -->
+        {% if total_pages and total_pages > 1 %}
+        <div class="pagination">
+            {% if page > 1 %}
+                <a href="{{ url_for('ana_sayfa', page=page-1, q=search_q, lokasyon=lokasyon_filtre, oda=oda_filtre, fiyat_araligi=fiyat_araligi) }}" class="page-btn">← Önceki Sayfa</a>
+            {% else %}
+                <span class="page-btn disabled">← Önceki Sayfa</span>
+            {% endif %}
+
+            <span class="page-info">Sayfa <strong>{{ page }}</strong> / <span style="font-weight: 400; font-size:0.9rem;">{{ total_pages }}</span></span>
+
+            {% if page < total_pages %}
+                <a href="{{ url_for('ana_sayfa', page=page+1, q=search_q, lokasyon=lokasyon_filtre, oda=oda_filtre, fiyat_araligi=fiyat_araligi) }}" class="page-btn">Sonraki Sayfa →</a>
+            {% else %}
+                <span class="page-btn disabled">Sonraki Sayfa →</span>
+            {% endif %}
+        </div>
+        {% endif %}
+
+    </main>
+
+</div>
+
+<!-- BOT STATUS FLOATING WINDOW (AJAX) -->
+<div id="bot-status">
+    <div class="status-header">
+        <div class="spinner"></div>
+        <span>Yapay Zeka Taraması Sürüyor...</span>
+    </div>
+    <div class="status-msg" id="bot-msg">Bağlanıyor...</div>
+</div>
+
+<!-- LIGHTBOX -->
+<div id="image-overlay" onclick="if(event.target === this) closeImage()">
+    <button class="close-lightbox" onclick="closeImage()">&times;</button>
+    <img id="overlay-img" src="" alt="Büyütülmüş Resim">
+</div>
+
+<script>
+    const overlay = document.getElementById('image-overlay');
+    const overlayImg = document.getElementById('overlay-img');
+
+    function showImage(src) {
+        overlayImg.src = src;
+        overlay.classList.add('open');
+        document.body.style.overflow = 'hidden'; 
+    }
+    function closeImage() {
+        overlay.classList.remove('open');
+        setTimeout(() => overlayImg.src = '', 300); 
+        document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && overlay.classList.contains('open')) closeImage();
+    });
+
+    const botStatusWin = document.getElementById('bot-status');
+    const botMsg = document.getElementById('bot-msg');
+    let wasRunning = false;
+    
+    function checkBotStatus() {
+        fetch('/status')
+            .then(response => response.json())
+            .then(data => {
+                if(data.calisiyor) {
+                    botStatusWin.style.display = 'flex';
+                    botMsg.textContent = data.mesaj || "Bot çalışıyor...";
+                    wasRunning = true;
+                } else {
+                    botStatusWin.style.display = 'none';
+                    if (wasRunning) {
+                        window.location.reload();
+                    }
+                    wasRunning = false;
+                }
+            })
+            .catch(err => console.error("Status check failed", err));
+    }
+
+    setInterval(checkBotStatus, 2500);
+    checkBotStatus(); 
+</script>
+</body>
+</html>
