@@ -335,6 +335,16 @@
                     <input type="text" name="q" placeholder="Örn: Deniz Manzaralı..." value="{{ search_q }}">
                 </div>
 
+                <div class="input-group" style="margin-bottom: 5px;">
+                    <label>Sıralama</label>
+                    <select name="siralama">
+                        <option value="tarih_yeni" {% if siralama == 'tarih_yeni' %}selected{% endif %}>En Yeni İlk (Tarih)</option>
+                        <option value="tarih_eski" {% if siralama == 'tarih_eski' %}selected{% endif %}>En Eski İlk (Tarih)</option>
+                        <option value="fiyat_artan" {% if siralama == 'fiyat_artan' %}selected{% endif %}>Fiyata Göre Artan</option>
+                        <option value="fiyat_azalan" {% if siralama == 'fiyat_azalan' %}selected{% endif %}>Fiyata Göre Azalan</option>
+                    </select>
+                </div>
+
                 <div style="display:flex; gap: 10px;">
                     <button type="submit" class="btn-primary" style="flex: 2; box-shadow: none;">Uygula</button>
                     <a href="{{ url_for('ana_sayfa') }}" class="btn-outline" style="flex: 1; text-align:center; padding:12px;">Sıfırla</a>
@@ -449,7 +459,7 @@
         {% if total_pages and total_pages > 1 %}
         <div class="pagination">
             {% if page > 1 %}
-                <a href="{{ url_for('ana_sayfa', page=page-1, q=search_q, lokasyon=lokasyon_filtre, oda=oda_filtre, fiyat_araligi=fiyat_araligi) }}" class="page-btn">← Önceki Sayfa</a>
+                <a href="{{ url_for('ana_sayfa', page=page-1, q=search_q, lokasyon=lokasyon_filtre, oda=oda_filtre, fiyat_araligi=fiyat_araligi, siralama=siralama) }}" class="page-btn">← Önceki Sayfa</a>
             {% else %}
                 <span class="page-btn disabled">← Önceki Sayfa</span>
             {% endif %}
@@ -457,7 +467,7 @@
             <span class="page-info">Sayfa <strong>{{ page }}</strong> / <span style="font-weight: 400; font-size:0.9rem;">{{ total_pages }}</span></span>
 
             {% if page < total_pages %}
-                <a href="{{ url_for('ana_sayfa', page=page+1, q=search_q, lokasyon=lokasyon_filtre, oda=oda_filtre, fiyat_araligi=fiyat_araligi) }}" class="page-btn">Sonraki Sayfa →</a>
+                <a href="{{ url_for('ana_sayfa', page=page+1, q=search_q, lokasyon=lokasyon_filtre, oda=oda_filtre, fiyat_araligi=fiyat_araligi, siralama=siralama) }}" class="page-btn">Sonraki Sayfa →</a>
             {% else %}
                 <span class="page-btn disabled">Sonraki Sayfa →</span>
             {% endif %}

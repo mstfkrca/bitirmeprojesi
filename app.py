@@ -109,6 +109,7 @@ def ana_sayfa():
     lokasyon_filtre = request.args.get('lokasyon', '').strip()
     oda_filtre = request.args.get('oda', '').strip()
     fiyat_araligi = request.args.get('fiyat_araligi', '').strip()
+    siralama = request.args.get('siralama', 'tarih_yeni').strip()
     
     page = request.args.get('page', 1, type=int)
     per_page = 15
@@ -118,7 +119,7 @@ def ana_sayfa():
     cursor = conn.cursor()
     
     # Dinamik Dropdown Seçeneklerini DB'den Çek (Benzersiz Lokasyon ve Oda)
-    cursor.execute("SELECT DISTINCT lokasyon FROM ilanlar WHERE lokasyon IS NOT NULL AND lokasyon != '' AND lokasyon != '-'")
+    cursor.execute("SELECT DISTINCT lokasyon FROM ilanlar WHERE lokasyon IS NOT NULL AND lokasyon != '' AND lokasyon != '-' ORDER BY lokasyon ASC")
     lokasyonlar = [row[0] for row in cursor.fetchall() if row[0]]
     
     cursor.execute("SELECT DISTINCT oda_sayisi FROM ilanlar WHERE oda_sayisi IS NOT NULL AND oda_sayisi != '' AND oda_sayisi != '-'")
@@ -158,7 +159,15 @@ def ana_sayfa():
     if page > total_pages and total_pages > 0: page = total_pages
 
     # 15 İlanı Limitle ve Getir
-    query = f"SELECT * FROM ilanlar WHERE {query_conditions} ORDER BY tarih DESC LIMIT ? OFFSET ?"
+    order_clause = "tarih DESC"
+    if siralama == "tarih_eski":
+        order_clause = "tarih ASC"
+    elif siralama == "fiyat_artan":
+        order_clause = "CAST(REPLACE(REPLACE(fiyat, '.', ''), ' TL', '') AS INTEGER) ASC"
+    elif siralama == "fiyat_azalan":
+        order_clause = "CAST(REPLACE(REPLACE(fiyat, '.', ''), ' TL', '') AS INTEGER) DESC"
+
+    query = f"SELECT * FROM ilanlar WHERE {query_conditions} ORDER BY {order_clause} LIMIT ? OFFSET ?"
     params.extend([per_page, (page - 1) * per_page])
     
     cursor.execute(query, params)
@@ -169,7 +178,8 @@ def ana_sayfa():
                            lokasyonlar=lokasyonlar, odalar=odalar,
                            search_q=search_q, lokasyon_filtre=lokasyon_filtre, 
                            oda_filtre=oda_filtre, fiyat_araligi=fiyat_araligi,
-                           page=page, total_pages=total_pages, total_ilan=total_ilan)
+                           siralama=siralama, page=page, total_pages=total_pages, 
+                           total_ilan=total_ilan)
 
 if __name__ == '__main__':
     app.run(debug=True, port=8080, use_reloader=False)
