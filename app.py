@@ -104,9 +104,10 @@ def ana_sayfa():
         # Post sonrası yönlendirme yap ki F5 atınca tekrar Post atmasın
         return redirect(url_for('ana_sayfa'))
 
-    # --- GET İsteği (Arama ve Filtreleme İşlemleri) ---
     search_q = request.args.get('q', '').strip()
-    lokasyon_filtre = request.args.get('lokasyon', '').strip()
+    il_filtre = request.args.get('il', '').strip()
+    ilce_filtre = request.args.get('ilce', '').strip()
+    mahalle_filtre = request.args.get('mahalle', '').strip()
     oda_filtre = request.args.get('oda', '').strip()
     fiyat_araligi = request.args.get('fiyat_araligi', '').strip()
     siralama = request.args.get('siralama', 'tarih_yeni').strip()
@@ -118,9 +119,33 @@ def ana_sayfa():
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     
-    # Dinamik Dropdown Seçeneklerini DB'den Çek (Benzersiz Lokasyon ve Oda)
-    cursor.execute("SELECT DISTINCT lokasyon FROM ilanlar WHERE lokasyon IS NOT NULL AND lokasyon != '' AND lokasyon != '-' ORDER BY lokasyon ASC")
-    lokasyonlar = [row[0] for row in cursor.fetchall() if row[0]]
+    # Dinamik Dropdown Seçeneklerini DB'den Çek
+    cursor.execute("SELECT DISTINCT lokasyon FROM ilanlar WHERE lokasyon IS NOT NULL AND lokasyon != '' AND lokasyon != '-'")
+    ham_lokasyonlar = [row[0] for row in cursor.fetchall() if row[0]]
+    
+    lokasyon_agaci = {}
+    
+    for lok in ham_lokasyonlar:
+        parts = lok.split('/')
+        if len(parts) >= 1:
+            il = parts[0].strip()
+            if il not in lokasyon_agaci:
+                lokasyon_agaci[il] = {}
+                
+            if len(parts) >= 2:
+                ilce = parts[1].strip()
+                if ilce not in lokasyon_agaci[il]:
+                    lokasyon_agaci[il][ilce] = set()
+                    
+                if len(parts) >= 3:
+                    mahalle = parts[2].strip()
+                    lokasyon_agaci[il][ilce].add(mahalle)
+                
+    # Set'leri listeye çevirelim ki HTML'de rahat dönelim
+    iller = sorted(list(lokasyon_agaci.keys()))
+    for il in lokasyon_agaci:
+        for ilce in lokasyon_agaci[il]:
+            lokasyon_agaci[il][ilce] = sorted(list(lokasyon_agaci[il][ilce]))
     
     cursor.execute("SELECT DISTINCT oda_sayisi FROM ilanlar WHERE oda_sayisi IS NOT NULL AND oda_sayisi != '' AND oda_sayisi != '-'")
     odalar = [row[0] for row in cursor.fetchall() if row[0]]
@@ -133,9 +158,16 @@ def ana_sayfa():
         query_conditions += " AND (baslik LIKE ? OR aciklama LIKE ?)"
         params.extend([f"%{search_q}%", f"%{search_q}%"])
 
-    if lokasyon_filtre:
-        query_conditions += " AND lokasyon = ?"
-        params.append(lokasyon_filtre)
+    if il_filtre:
+        if mahalle_filtre:
+            query_conditions += " AND lokasyon LIKE ?"
+            params.append(f"{il_filtre}/{ilce_filtre}/{mahalle_filtre}%")
+        elif ilce_filtre:
+            query_conditions += " AND lokasyon LIKE ?"
+            params.append(f"{il_filtre}/{ilce_filtre}%")
+        else:
+            query_conditions += " AND lokasyon LIKE ?"
+            params.append(f"{il_filtre}/%")
         
     if oda_filtre:
         query_conditions += " AND oda_sayisi = ?"
@@ -172,14 +204,33 @@ def ana_sayfa():
     
     cursor.execute(query, params)
     ilanlar = cursor.fetchall()
+    
+    # Ortalama Fiyat Hesaplama
+    ortalama_fiyat = None
+    bolge_adi = None
+    if il_filtre:
+        bolge_adi = f"{il_filtre} İli"
+        if ilce_filtre:
+            bolge_adi = f"{ilce_filtre}"
+            if mahalle_filtre:
+                bolge_adi = f"{mahalle_filtre}"
+            
+        avg_query = f"SELECT AVG(CAST(REPLACE(REPLACE(fiyat, '.', ''), ' TL', '') AS INTEGER)) FROM ilanlar WHERE {query_conditions} AND fiyat IS NOT NULL AND fiyat != 'Fiyat Yok' AND fiyat != ''"
+        # We need to use params without the limit/offset for the average
+        avg_params = params[:-2] 
+        cursor.execute(avg_query, avg_params)
+        avg_result = cursor.fetchone()[0]
+        if avg_result:
+            ortalama_fiyat = f"{int(avg_result):,} TL".replace(',', '.')
+            
     conn.close()
 
     return render_template('index.html', ilanlar=ilanlar, 
-                           lokasyonlar=lokasyonlar, odalar=odalar,
-                           search_q=search_q, lokasyon_filtre=lokasyon_filtre, 
+                           iller=iller, lokasyon_agaci=lokasyon_agaci, odalar=odalar,
+                           search_q=search_q, il_filtre=il_filtre, ilce_filtre=ilce_filtre, mahalle_filtre=mahalle_filtre,
                            oda_filtre=oda_filtre, fiyat_araligi=fiyat_araligi,
                            siralama=siralama, page=page, total_pages=total_pages, 
-                           total_ilan=total_ilan)
+                           total_ilan=total_ilan, ortalama_fiyat=ortalama_fiyat, bolge_adi=bolge_adi)
 
 if __name__ == '__main__':
     app.run(debug=True, port=8080, use_reloader=False)

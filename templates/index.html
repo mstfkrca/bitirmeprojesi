@@ -299,12 +299,28 @@
             <form method="GET" action="{{ url_for('ana_sayfa') }}" style="display: flex; flex-direction: column; gap: 12px;">
                 
                 <div class="input-group">
-                    <label>Bölge Seç</label>
-                    <select name="lokasyon">
-                        <option value="">Tüm Bölgeler</option>
-                        {% for lok in lokasyonlar %}
-                            <option value="{{ lok }}" {% if lok == lokasyon_filtre %}selected{% endif %}>{{ lok }}</option>
+                    <label>İl Seç</label>
+                    <select name="il" id="il-select" onchange="ilceGuncelle()">
+                        <option value="">Tüm İller</option>
+                        {% for il in iller %}
+                            <option value="{{ il }}" {% if il == il_filtre %}selected{% endif %}>{{ il }}</option>
                         {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label>İlçe Seç</label>
+                    <select name="ilce" id="ilce-select" onchange="mahalleGuncelle()">
+                        <option value="">Tüm İlçeler</option>
+                        <!-- JavaScript ile doldurulacak -->
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Mahalle Seç</label>
+                    <select name="mahalle" id="mahalle-select">
+                        <option value="">Tüm Mahalleler</option>
+                        <!-- JavaScript ile doldurulacak -->
                     </select>
                 </div>
 
@@ -371,9 +387,16 @@
                 <h2>Keşfedilen İlanlar</h2>
                 <p>Belirlediğiniz kriterlerdeki en güncel fırsatlar.</p>
             </div>
-            {% if total_ilan %}
-                <div class="badge">{{ total_ilan }} Sonuç Bulundu</div>
-            {% endif %}
+            <div style="text-align: right;">
+                {% if total_ilan %}
+                    <div class="badge" style="display: inline-block;">{{ total_ilan }} Sonuç Bulundu</div>
+                {% endif %}
+                {% if ortalama_fiyat %}
+                    <div class="badge" style="margin-top: 10px; background: rgba(16, 185, 129, 0.15); color: var(--success); border-color: rgba(16, 185, 129, 0.3); display: inline-block;">
+                        {{ bolge_adi }} Ortalama Ev Fiyatı: {{ ortalama_fiyat }}
+                    </div>
+                {% endif %}
+            </div>
         </div>
 
         <div class="flash-messages">
@@ -459,7 +482,7 @@
         {% if total_pages and total_pages > 1 %}
         <div class="pagination">
             {% if page > 1 %}
-                <a href="{{ url_for('ana_sayfa', page=page-1, q=search_q, lokasyon=lokasyon_filtre, oda=oda_filtre, fiyat_araligi=fiyat_araligi, siralama=siralama) }}" class="page-btn">← Önceki Sayfa</a>
+                <a href="{{ url_for('ana_sayfa', page=page-1, q=search_q, il=il_filtre, ilce=ilce_filtre, mahalle=mahalle_filtre, oda=oda_filtre, fiyat_araligi=fiyat_araligi, siralama=siralama) }}" class="page-btn">← Önceki Sayfa</a>
             {% else %}
                 <span class="page-btn disabled">← Önceki Sayfa</span>
             {% endif %}
@@ -467,7 +490,7 @@
             <span class="page-info">Sayfa <strong>{{ page }}</strong> / <span style="font-weight: 400; font-size:0.9rem;">{{ total_pages }}</span></span>
 
             {% if page < total_pages %}
-                <a href="{{ url_for('ana_sayfa', page=page+1, q=search_q, lokasyon=lokasyon_filtre, oda=oda_filtre, fiyat_araligi=fiyat_araligi, siralama=siralama) }}" class="page-btn">Sonraki Sayfa →</a>
+                <a href="{{ url_for('ana_sayfa', page=page+1, q=search_q, il=il_filtre, ilce=ilce_filtre, mahalle=mahalle_filtre, oda=oda_filtre, fiyat_araligi=fiyat_araligi, siralama=siralama) }}" class="page-btn">Sonraki Sayfa →</a>
             {% else %}
                 <span class="page-btn disabled">Sonraki Sayfa →</span>
             {% endif %}
@@ -494,6 +517,62 @@
 </div>
 
 <script>
+    const lokasyonAgaci = {{ lokasyon_agaci | tojson | safe }};
+    const mevcutIl = "{{ il_filtre }}";
+    const mevcutIlce = "{{ ilce_filtre }}";
+    const mevcutMahalle = "{{ mahalle_filtre }}";
+
+    function ilceGuncelle() {
+        const ilSelect = document.getElementById('il-select');
+        const ilceSelect = document.getElementById('ilce-select');
+        const mahalleSelect = document.getElementById('mahalle-select');
+        
+        const seciliIl = ilSelect.value;
+        
+        ilceSelect.innerHTML = '<option value="">Tüm İlçeler</option>';
+        if(mahalleSelect) mahalleSelect.innerHTML = '<option value="">Tüm Mahalleler</option>';
+        
+        if(seciliIl && lokasyonAgaci[seciliIl]) {
+            Object.keys(lokasyonAgaci[seciliIl]).sort().forEach(ilce => {
+                const option = document.createElement('option');
+                option.value = ilce;
+                option.textContent = ilce;
+                if(ilce === mevcutIlce) option.selected = true;
+                ilceSelect.appendChild(option);
+            });
+        }
+        
+        mahalleGuncelle();
+    }
+    
+    function mahalleGuncelle() {
+        const ilSelect = document.getElementById('il-select');
+        const ilceSelect = document.getElementById('ilce-select');
+        const mahalleSelect = document.getElementById('mahalle-select');
+        
+        if(!mahalleSelect) return;
+        
+        const seciliIl = ilSelect.value;
+        const seciliIlce = ilceSelect.value;
+        
+        mahalleSelect.innerHTML = '<option value="">Tüm Mahalleler</option>';
+        
+        if(seciliIl && seciliIlce && lokasyonAgaci[seciliIl] && lokasyonAgaci[seciliIl][seciliIlce]) {
+            lokasyonAgaci[seciliIl][seciliIlce].forEach(mahalle => {
+                const option = document.createElement('option');
+                option.value = mahalle;
+                option.textContent = mahalle;
+                if(mahalle === mevcutMahalle) option.selected = true;
+                mahalleSelect.appendChild(option);
+            });
+        }
+    }
+    
+    // Sayfa yüklendiğinde ilçe ve mahalleyi doldur
+    document.addEventListener("DOMContentLoaded", function() {
+        ilceGuncelle();
+    });
+
     const overlay = document.getElementById('image-overlay');
     const overlayImg = document.getElementById('overlay-img');
 
