@@ -5,12 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Emlak Avcısı | Premium V2</title>
     
+    <!-- Google Fonts üzerinden Inter (okunabilirlik için) ve Outfit (başlıklar için premium görünüm sunar) yazı tiplerini yüklüyoruz -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
     
     <style>
+        /* ===== GLOBAL CSS TASARIM DEĞİŞKENLERİ (CSS VARIABLES) ===== */
         :root {
+            /* Açık tema (Light Mode) için renk paleti ve tasarım sınırları */
             --bg-body: #f3f4f6;
-            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-bg: rgba(255, 255, 255, 0.7); /* Glassmorphism için yarı saydam arka plan */
             --glass-border: rgba(255, 255, 255, 0.5);
             --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.07);
             
@@ -30,6 +33,8 @@
             --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
+        /* ===== OTOMATİK KARANLIK MOD (DARK MODE) DESTEĞİ ===== */
+        /* Tarayıcı veya işletim sistemi karanlık modda ise bu renk kodları otomatik devreye girer */
         @media (prefers-color-scheme: dark) {
             :root {
                 --bg-body: #0f172a;
@@ -43,10 +48,12 @@
             }
         }
 
+        /* Sıfırlama ve Genel Yerleşim Ayarları */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: var(--font-main);
             background-color: var(--bg-body);
+            /* Arka planda yumuşak ve premium hissettiren iki adet gradyan (gradient) küresi oluşturuyoruz */
             background-image: 
                 radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
                 radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
@@ -57,6 +64,7 @@
             flex-direction: column;
         }
 
+        /* Ana Kapsayıcı: Sol panel ile sağ içerik alanını yan yana tutar */
         .app-container {
             display: flex;
             flex-wrap: nowrap;
@@ -64,8 +72,9 @@
             overflow: hidden;
         }
 
+        /* Sol Taraftaki Kontrol ve Filtreleme Menüsü (Sidebar) */
         .sidebar {
-            width: 320px; /* Biraz küçültüldü alan açmak için */
+            width: 320px;
             background: var(--glass-bg);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
@@ -74,12 +83,13 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
-            overflow-y: auto;
+            overflow-y: auto; /* İçerik taşarsa kendi içinde kaydırılabilir */
             z-index: 10;
         }
         .sidebar::-webkit-scrollbar { width: 4px; }
         .sidebar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
 
+        /* Başlık / Logo Logosu */
         .brand {
             font-family: var(--font-head);
             font-size: 2.2rem;
@@ -92,6 +102,7 @@
             letter-spacing: -1px;
         }
 
+        /* Yarı Saydam Cam Efektli Kutular (Glassmorphism) */
         .glass-panel {
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
@@ -104,6 +115,7 @@
         }
         .glass-panel h3 { font-size: 1.1rem; font-weight: 700; color: var(--text-dark); margin-bottom: 2px; display:flex; align-items:center; gap:8px;}
 
+        /* Form Elemanlarının Tasarımları */
         .input-group { display: flex; flex-direction: column; gap: 6px; }
         label { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;}
         input[type="text"], input[type="number"], select {
@@ -119,6 +131,7 @@
         }
         select {
             cursor: pointer; appearance: none;
+            /* Özel SVG aşağı ok ikonu yerleştiriyoruz */
             background-image: url('data:image/svg+xml;utf8,<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>');
             background-repeat: no-repeat; background-position: right 14px center; background-size: 16px;
             font-weight: 500;
@@ -132,6 +145,7 @@
         }
         input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
         
+        /* Buton Tasarımları ve Hover Animasyonları */
         button {
             padding: 12px 18px;
             border-radius: var(--radius-md);
@@ -151,7 +165,7 @@
         .btn-outline:hover { background: rgba(0,0,0,0.05); }
         @media (prefers-color-scheme: dark) { .btn-outline:hover { background: rgba(255,255,255,0.05); } }
 
-        /* Main Content */
+        /* Sağ Taraftaki Ana İçerik Alanı */
         .main-content {
             flex: 1;
             padding: 40px;
@@ -162,11 +176,13 @@
         .main-content::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 10px; }
         @media (prefers-color-scheme: dark) { .main-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); } }
 
+        /* Üst Bilgilendirme Çubuğu */
         .topbar { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px; }
         .topbar h2 { font-family: var(--font-head); font-size: 2.5rem; font-weight: 800; color: var(--text-dark); line-height: 1;}
         .topbar p { color: var(--text-muted); font-size: 1rem; margin-top: 5px; font-weight: 500;}
         .badge { background: rgba(59, 130, 246, 0.15); color: var(--primary); padding: 8px 16px; border-radius: 30px; font-weight: 700; font-size: 0.95rem; border: 1px solid rgba(59, 130, 246, 0.3);}
 
+        /* Flash Bildirim Mesajları */
         .flash-messages { margin-bottom: 25px; }
         .alert {
             padding: 16px 20px; border-radius: var(--radius-md); margin-bottom: 15px;
@@ -179,23 +195,28 @@
         .alert-danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); }
         .alert-info { background: rgba(59, 130, 246, 0.15); color: var(--primary); border: 1px solid rgba(59, 130, 246, 0.3); }
 
+        /* İlan Kartlarının Grid (Izgara) Düzeni */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 30px; }
         .card { background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: var(--radius-xl); overflow: hidden; box-shadow: var(--glass-shadow); transition: var(--transition); display: flex; flex-direction: column; }
         .card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.12); border-color: rgba(59, 130, 246, 0.4); }
         
+        /* Resim Alanı ve Zoom Efekti */
         .card-img-wrap { position: relative; height: 240px; overflow: hidden; cursor: crosshair; }
         .card-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); }
         .card:hover .card-img-wrap img { transform: scale(1.08); }
         
+        /* Resim Üzerindeki Rozetler (Konum ve ID) */
         .location-tag { position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.65); color: #fff; padding: 6px 14px; border-radius: 30px; font-size: 0.85rem; font-weight: 600; backdrop-filter: blur(8px); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .id-tag { position: absolute; bottom: 15px; right: 15px; background: var(--primary); color: #fff; padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; box-shadow: 0 4px 10px rgba(59,130,246,0.4); }
 
+        /* Kart İçeriği */
         .card-body { padding: 25px; display: flex; flex-direction: column; flex-grow: 1; gap: 15px;}
         .card-title { font-size: 1.15rem; font-weight: 700; color: var(--text-dark); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .card-price { font-family: var(--font-head); font-size: 1.8rem; color: var(--success); font-weight: 800; }
         .card-header-row { display: flex; justify-content: space-between; align-items: flex-end; }
         .card-date { font-size: 0.8rem; color: var(--text-muted); font-weight: 500;}
 
+        /* Özet Teknik Özellikler Grid'i (Oda sayısı, Net m2 vb.) */
         .specs-grid { display: grid; background: rgba(0,0,0,0.03); padding: 10px; border-radius: var(--radius-md); border: 1px solid rgba(0,0,0,0.05); }
         @media (prefers-color-scheme: dark) { .specs-grid { background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.05);} }
         
@@ -203,6 +224,7 @@
         .spec-item span { color: var(--text-muted); font-weight: 500; font-size: 0.75rem; text-transform: uppercase;}
         .spec-item strong { color: var(--text-dark); font-weight: 700; font-size: 0.95rem; margin-top: 2px;}
 
+        /* Açılır Menü Detayları */
         .extended-specs { display: grid; grid-template-columns: 1fr; gap: 6px; margin-bottom: 15px; background: rgba(0,0,0,0.02); padding: 10px; border-radius: var(--radius-md);}
         @media (prefers-color-scheme: dark) { .extended-specs { background: rgba(255,255,255,0.02); } }
         .extended-specs div { display: flex; justify-content: space-between; font-size: 0.85rem; border-bottom: 1px dashed rgba(0,0,0,0.05); padding-bottom: 4px;}
@@ -210,6 +232,7 @@
         .extended-specs span { color: var(--text-muted); }
         .extended-specs strong { color: var(--text-dark); text-align: right; max-width: 60%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
 
+        /* HTML5 Details/Summary Açılır Yapısının Özelleştirilmesi */
         .details-expander { background: rgba(0,0,0,0.02); border-radius: var(--radius-md); padding: 12px 15px; border: 1px solid transparent; transition: 0.3s;}
         .details-expander:hover { border-color: var(--glass-border); }
         .details-expander summary { font-size: 0.95rem; font-weight: 600; cursor: pointer; color: var(--primary); outline:none; display: flex; align-items: center; justify-content: space-between;}
@@ -220,6 +243,7 @@
         .details-content::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
         @media (prefers-color-scheme: dark) { .details-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); } }
 
+        /* Kartın Altındaki Buton Satırı */
         .card-actions { display: flex; gap: 12px; margin-top: auto; padding-top: 10px; }
         .btn-link {
             flex: 1; display: inline-flex; align-items: center; justify-content: center;
@@ -234,26 +258,48 @@
         }
         .btn-icon-del:hover { background: var(--danger); color: white; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);}
 
-        /* Pagination Styles */
+        /* Sayfalama (Pagination) Alt Menüsü */
         .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 40px; padding-bottom: 20px;}
         .page-btn { background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--glass-border); padding: 10px 18px; border-radius: var(--radius-md); color: var(--primary); font-weight: 700; text-decoration: none; transition: 0.2s; box-shadow: 0 4px 15px rgba(0,0,0,0.03);}
         .page-btn:hover:not(.disabled) { background: var(--primary); color: white; transform: translateY(-2px); border-color: transparent;}
         .page-btn.disabled { opacity: 0.4; cursor: not-allowed; color: var(--text-muted); background: rgba(0,0,0,0.02);}
         .page-info { font-weight: 700; color: var(--text-dark); font-size: 1rem; background: var(--glass-bg); padding: 10px 18px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); font-family: var(--font-head);}
 
-        /* Floating Bot Status */
-        #bot-status { position: fixed; bottom: 40px; right: 40px; z-index: 50; background: var(--glass-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(59, 130, 246, 0.4); border-radius: var(--radius-lg); padding: 24px; width: 360px; box-shadow: 0 15px 50px rgba(0,0,0,0.2); display: none; flex-direction: column; gap: 15px; animation: slideUpBounce 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); border-left: 4px solid var(--primary); }
+        /* ===== SAĞ ALTTA YÜZEN BOT DURUMU PANELİ ===== */
+        /* AJAX durum kontrolü çalışırken ekranın sağ köşesinde beliren animasyonlu bildirim kutusu */
+        #bot-status { 
+            position: fixed; 
+            bottom: 40px; 
+            right: 40px; 
+            z-index: 50; 
+            background: var(--glass-bg); 
+            backdrop-filter: blur(24px); 
+            -webkit-backdrop-filter: blur(24px); 
+            border: 1px solid rgba(59, 130, 246, 0.4); 
+            border-radius: var(--radius-lg); 
+            padding: 24px; 
+            width: 360px; 
+            box-shadow: 0 15px 50px rgba(0,0,0,0.2); 
+            display: none; /* Varsayılan olarak kapalıdır, JS ile aktif edilir */
+            flex-direction: column; 
+            gap: 15px; 
+            animation: slideUpBounce 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            border-left: 4px solid var(--primary); 
+        }
         @keyframes slideUpBounce { 0% { transform: translateY(80px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
         .status-header { display: flex; align-items: center; gap: 12px; font-weight: 800; color: var(--text-dark); font-size: 1.1rem;}
+        /* Yuvarlak Dönen Yükleniyor (Spinner) Efekti */
         .spinner { width: 24px; height: 24px; border: 3px solid rgba(59, 130, 246, 0.2); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
         .status-msg { font-size: 0.95rem; color: var(--text-muted); line-height: 1.5; font-weight: 500;}
 
+        /* Arama Bulunamadı / Veritabanı Boş Durum Tasarımı */
         .empty-state { grid-column: 1 / -1; text-align: center; padding: 100px 20px; background: var(--glass-bg); border-radius: var(--radius-xl); border: 1px dashed var(--glass-border); backdrop-filter: blur(10px);}
         .empty-state h3 { font-size: 1.8rem; font-family: var(--font-head); color: var(--text-dark); margin-bottom: 12px; }
         .empty-state p { color: var(--text-muted); font-size: 1.1rem;}
 
-        /* Lightbox */
+        /* ===== LIGHTBOX (GÖRSEL BÜYÜTEÇ PREVIEW) ===== */
+        /* Ekran görüntülerine tıklayınca resmi tam ekran göstermek için kullanılan karanlık katman */
         #image-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100; display: none; justify-content: center; align-items: center; padding: 40px; backdrop-filter: blur(10px); opacity: 0; transition: opacity 0.3s; }
         #image-overlay.open { display: flex; opacity: 1; }
         #image-overlay img { max-width: 90vw; max-height: 90vh; border-radius: var(--radius-lg); box-shadow: 0 0 60px rgba(0,0,0,0.6); transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);}
@@ -261,6 +307,7 @@
         .close-lightbox { position: absolute; top: 30px; right: 40px; color: white; font-size: 3rem; cursor: pointer; opacity: 0.7; transition: 0.2s; background: none; border: none;}
         .close-lightbox:hover { opacity: 1; transform: scale(1.1); }
 
+        /* Mobil ve Tablet Uyumluluk Ayarları */
         @media (max-width: 1024px) {
             .app-container { flex-direction: column; height: auto; overflow: visible;}
             .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--glass-border); position: relative; z-index: 1;}
@@ -273,11 +320,11 @@
 
 <div class="app-container">
     
-    <!-- SIDEBAR -->
+    <!-- ================= Sol Kontrol Paneli (SIDEBAR) ================= -->
     <aside class="sidebar">
         <div class="brand">Emlak Avcısı</div>
 
-        <!-- TARAMA EKRANI -->
+        <!-- 1. Form: Yeni İlan Tarama Paneli -->
         <div class="glass-panel">
             <h3><span>🚀</span> Yeni İlan Tara</h3>
             <form method="POST" action="{{ url_for('ana_sayfa') }}" style="display: flex; flex-direction: column; gap: 12px;">
@@ -293,11 +340,12 @@
             </form>
         </div>
 
-        <!-- YENİ DROPDOWN FİLTRELEME EKRANI -->
+        <!-- 2. Form: Sonuçları Filtreleme Paneli -->
         <div class="glass-panel">
             <h3><span>🔍</span> Sonuçları Filtrele</h3>
             <form method="GET" action="{{ url_for('ana_sayfa') }}" style="display: flex; flex-direction: column; gap: 12px;">
                 
+                <!-- İl Seçimi (Değiştiğinde JS ile ilçeleri doldurur) -->
                 <div class="input-group">
                     <label>İl Seç</label>
                     <select name="il" id="il-select" onchange="ilceGuncelle()">
@@ -308,22 +356,23 @@
                     </select>
                 </div>
                 
+                <!-- İlçe Seçimi (İl'e göre JS ile dolacak) -->
                 <div class="input-group">
                     <label>İlçe Seç</label>
                     <select name="ilce" id="ilce-select" onchange="mahalleGuncelle()">
                         <option value="">Tüm İlçeler</option>
-                        <!-- JavaScript ile doldurulacak -->
                     </select>
                 </div>
 
+                <!-- Mahalle Seçimi (İlçe'ye göre JS ile dolacak) -->
                 <div class="input-group">
                     <label>Mahalle Seç</label>
                     <select name="mahalle" id="mahalle-select">
                         <option value="">Tüm Mahalleler</option>
-                        <!-- JavaScript ile doldurulacak -->
                     </select>
                 </div>
 
+                <!-- Oda ve Fiyat Aralığı Yan Yana Grid Düzeni -->
                 <div style="display: flex; gap: 10px;">
                     <div class="input-group" style="flex:1;">
                         <label>Oda Sayısı</label>
@@ -346,11 +395,13 @@
                     </div>
                 </div>
 
+                <!-- Kelime Arama Girişi -->
                 <div class="input-group" style="margin-bottom: 5px;">
                     <label>Kelime Arama</label>
                     <input type="text" name="q" placeholder="Örn: Deniz Manzaralı..." value="{{ search_q }}">
                 </div>
 
+                <!-- Sıralama Seçenekleri -->
                 <div class="input-group" style="margin-bottom: 5px;">
                     <label>Sıralama</label>
                     <select name="siralama">
@@ -368,11 +419,12 @@
             </form>
         </div>
 
-        <!-- TÜMÜNÜ SİL EKRANI -->
+        <!-- 3. Form: Tüm Verileri Silme Bölümü (Tehlikeli Bölge) -->
         <div class="glass-panel" style="border-color: rgba(239, 68, 68, 0.2); background: rgba(239, 68, 68, 0.02);">
             <h3 style="color: var(--danger);"><span>⚠️</span> Tehlikeli Bölge</h3>
             <form method="POST" action="{{ url_for('ana_sayfa') }}">
                 <button type="submit" name="temizle" class="btn-danger" style="width: 100%;" onclick="return confirm('Tüm arşivi (Veritabanı + Resimler) SİLMEK istediğine emin misin? Bu işlem geri alınamaz!');">
+                    <!-- SVG Çöp Kutusu İkonu -->
                     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px;"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6"/></svg>
                     Tüm Arşivi Yok Et
                 </button>
@@ -380,7 +432,7 @@
         </div>
     </aside>
 
-    <!-- MAIN CONTENT -->
+    <!-- ================= Sağ İçerik Alanı (MAIN CONTENT) ================= -->
     <main class="main-content">
         <div class="topbar">
             <div>
@@ -388,9 +440,11 @@
                 <p>Belirlediğiniz kriterlerdeki en güncel fırsatlar.</p>
             </div>
             <div style="text-align: right;">
+                <!-- Kaç sonuç çıktığını bildiren rozet -->
                 {% if total_ilan %}
                     <div class="badge" style="display: inline-block;">{{ total_ilan }} Sonuç Bulundu</div>
                 {% endif %}
+                <!-- Seçili bölgeye ait fiyat ortalaması istatistik rozeti -->
                 {% if ortalama_fiyat %}
                     <div class="badge" style="margin-top: 10px; background: rgba(16, 185, 129, 0.15); color: var(--success); border-color: rgba(16, 185, 129, 0.3); display: inline-block;">
                         {{ bolge_adi }} Ortalama Ev Fiyatı: {{ ortalama_fiyat }}
@@ -399,6 +453,7 @@
             </div>
         </div>
 
+        <!-- Bildirim Mesajlarının Gösterildiği Alan -->
         <div class="flash-messages">
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
@@ -412,9 +467,11 @@
             {% endwith %}
         </div>
 
+        <!-- İLAN KARTLARI DÖNGÜSÜ -->
         <div class="grid">
             {% for ilan in ilanlar %}
             <div class="card">
+                <!-- Resim Alanı (Tıklayınca Lightbox tetikler) -->
                 <div class="card-img-wrap" onclick="showImage('/screenshots/{{ ilan.resim_yolu }}')">
                     <img src="/screenshots/{{ ilan.resim_yolu }}" alt="İlan Resmi" loading="lazy">
                     <div class="location-tag">📍 {{ ilan.lokasyon }}</div>
@@ -426,6 +483,7 @@
                     <div class="card-header-row"><div class="card-price">{{ ilan.fiyat }}</div></div>
                     <div class="card-date">📅 {{ ilan.tarih }}</div>
 
+                    <!-- Özet Özellikler Satırı -->
                     <div class="specs-grid" style="grid-template-columns: repeat(4, 1fr); gap: 5px;">
                         <div class="spec-item"><span>Oda</span> <strong>{{ ilan.oda_sayisi }}</strong></div>
                         <div class="spec-item"><span>M²(B/N)</span> <strong>{{ ilan.m2_brut }}/{{ ilan.m2_net }}</strong></div>
@@ -437,6 +495,7 @@
                         Kimden: <span style="color: var(--primary);">{{ ilan.kimden }}</span>
                     </div>
 
+                    <!-- Tüm Detaylar ve Açıklama Alanı (Details akordeon yapısında tutulmuştur) -->
                     <details class="details-expander" open>
                         <summary>Tüm Özellikler & Açıklama</summary>
                         <div class="details-content">
@@ -459,6 +518,7 @@
                         </div>
                     </details>
 
+                    <!-- Aksiyon Butonları (Orijinal siteye git ve Tekli ilanı sil) -->
                     <div class="card-actions">
                         <a href="{{ ilan.link }}" target="_blank" class="btn-link">Sitede İncele ↗</a>
                         <form method="POST" action="{{ url_for('ana_sayfa') }}" style="display: inline-block;">
@@ -471,6 +531,7 @@
                 </div>
             </div>
             {% else %}
+            <!-- Veritabanı boşsa gösterilecek bilgilendirme kutusu -->
             <div class="empty-state">
                 <h3>Arama Sonucu Bulunamadı 🏚️</h3>
                 <p>Belirlediğiniz seçeneklerde sonuç yok veya veritabanı boş.</p>
@@ -478,10 +539,11 @@
             {% endfor %}
         </div>
 
-        <!-- SAYFALAMA (PAGINATION) BÖLÜMÜ -->
+        <!-- ================= Sayfalama (PAGINATION) Alanı ================= -->
         {% if total_pages and total_pages > 1 %}
         <div class="pagination">
             {% if page > 1 %}
+                <!-- Bir önceki sayfaya geçerken mevcut arama filtrelerini (konum, arama vb.) URL'de koruyoruz -->
                 <a href="{{ url_for('ana_sayfa', page=page-1, q=search_q, il=il_filtre, ilce=ilce_filtre, mahalle=mahalle_filtre, oda=oda_filtre, fiyat_araligi=fiyat_araligi, siralama=siralama) }}" class="page-btn">← Önceki Sayfa</a>
             {% else %}
                 <span class="page-btn disabled">← Önceki Sayfa</span>
@@ -490,6 +552,7 @@
             <span class="page-info">Sayfa <strong>{{ page }}</strong> / <span style="font-weight: 400; font-size:0.9rem;">{{ total_pages }}</span></span>
 
             {% if page < total_pages %}
+                <!-- Bir sonraki sayfaya geçerken mevcut arama filtrelerini URL'de koruyoruz -->
                 <a href="{{ url_for('ana_sayfa', page=page+1, q=search_q, il=il_filtre, ilce=ilce_filtre, mahalle=mahalle_filtre, oda=oda_filtre, fiyat_araligi=fiyat_araligi, siralama=siralama) }}" class="page-btn">Sonraki Sayfa →</a>
             {% else %}
                 <span class="page-btn disabled">Sonraki Sayfa →</span>
@@ -501,7 +564,7 @@
 
 </div>
 
-<!-- BOT STATUS FLOATING WINDOW (AJAX) -->
+<!-- ================= YÜZEN BOT DURUM KUTUSU ================= -->
 <div id="bot-status">
     <div class="status-header">
         <div class="spinner"></div>
@@ -510,18 +573,22 @@
     <div class="status-msg" id="bot-msg">Bağlanıyor...</div>
 </div>
 
-<!-- LIGHTBOX -->
+<!-- ================= LIGHTBOX PREVIEW MODAL ================= -->
 <div id="image-overlay" onclick="if(event.target === this) closeImage()">
     <button class="close-lightbox" onclick="closeImage()">&times;</button>
     <img id="overlay-img" src="" alt="Büyütülmüş Resim">
 </div>
 
+<!-- ================= JAVASCRIPT DINAMIK ARAYÜZ MANTIĞI ================= -->
 <script>
+    // Flask tarafından gönderilen python lokasyon sözlük ağacını JS nesnesine dönüştürüyoruz.
+    // tojson safe filtresi, verinin JS formatına hatasız bir şekilde geçmesini sağlar.
     const lokasyonAgaci = {{ lokasyon_agaci | tojson | safe }};
     const mevcutIl = "{{ il_filtre }}";
     const mevcutIlce = "{{ ilce_filtre }}";
     const mevcutMahalle = "{{ mahalle_filtre }}";
 
+    // İl dropdown'ı değiştiğinde ilçeleri dinamik olarak dolduran fonksiyon
     function ilceGuncelle() {
         const ilSelect = document.getElementById('il-select');
         const ilceSelect = document.getElementById('ilce-select');
@@ -529,22 +596,27 @@
         
         const seciliIl = ilSelect.value;
         
+        // Önceki seçenekleri temizleyip başlangıç haline getiriyoruz
         ilceSelect.innerHTML = '<option value="">Tüm İlçeler</option>';
         if(mahalleSelect) mahalleSelect.innerHTML = '<option value="">Tüm Mahalleler</option>';
         
+        // Seçilen ile ait ilçeler varsa onları alfabetik sıralayıp dropdown'a option olarak ekliyoruz
         if(seciliIl && lokasyonAgaci[seciliIl]) {
             Object.keys(lokasyonAgaci[seciliIl]).sort().forEach(ilce => {
                 const option = document.createElement('option');
                 option.value = ilce;
                 option.textContent = ilce;
+                // Eğer sayfa yenilendiğinde seçili olan bir ilçe filtresi varsa onu tekrar seçili yapıyoruz
                 if(ilce === mevcutIlce) option.selected = true;
                 ilceSelect.appendChild(option);
             });
         }
         
+        // İlçeler güncellendikten sonra mahalleleri de tetikliyoruz
         mahalleGuncelle();
     }
     
+    // İlçe dropdown'ı değiştiğinde mahalleleri dinamik olarak dolduran fonksiyon
     function mahalleGuncelle() {
         const ilSelect = document.getElementById('il-select');
         const ilceSelect = document.getElementById('ilce-select');
@@ -557,53 +629,63 @@
         
         mahalleSelect.innerHTML = '<option value="">Tüm Mahalleler</option>';
         
+        // Seçilen il ve ilçeye ait mahalleler varsa onları listeleyip option olarak ekliyoruz
         if(seciliIl && seciliIlce && lokasyonAgaci[seciliIl] && lokasyonAgaci[seciliIl][seciliIlce]) {
             lokasyonAgaci[seciliIl][seciliIlce].forEach(mahalle => {
                 const option = document.createElement('option');
                 option.value = mahalle;
                 option.textContent = mahalle;
+                // Sayfa yenilendiğinde seçili mahalle varsa seçili kalmasını sağlıyoruz
                 if(mahalle === mevcutMahalle) option.selected = true;
                 mahalleSelect.appendChild(option);
             });
         }
     }
     
-    // Sayfa yüklendiğinde ilçe ve mahalleyi doldur
+    // Sayfa ilk yüklendiğinde (DOMContentLoaded) filtrelerin sıfırlanmaması için doldurma fonksiyonlarını çağırıyoruz
     document.addEventListener("DOMContentLoaded", function() {
         ilceGuncelle();
     });
 
+    // Lightbox (Resim Büyüteç) yönetimi
     const overlay = document.getElementById('image-overlay');
     const overlayImg = document.getElementById('overlay-img');
 
     function showImage(src) {
         overlayImg.src = src;
         overlay.classList.add('open');
-        document.body.style.overflow = 'hidden'; 
+        document.body.style.overflow = 'hidden'; // Arka plan kaydırılmasını (scroll) engelliyoruz
     }
     function closeImage() {
         overlay.classList.remove('open');
-        setTimeout(() => overlayImg.src = '', 300); 
+        setTimeout(() => overlayImg.src = '', 300); // Kapanma animasyonu bittikten sonra resmi sıfırla
         document.body.style.overflow = '';
     }
+    // ESC tuşuna basıldığında resmi kapatma desteği
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && overlay.classList.contains('open')) closeImage();
     });
 
+    // ===== AJAX POLLING (ARKA PLAN DURUM SORGULAMA) =====
     const botStatusWin = document.getElementById('bot-status');
     const botMsg = document.getElementById('bot-msg');
-    let wasRunning = false;
+    let wasRunning = false; // Botun durumunu hafızada tutarak bittiğinde sayfayı yenilemek için flag
     
     function checkBotStatus() {
+        // app.py üzerindeki /status rotasına asenkron fetch isteği atıyoruz
         fetch('/status')
             .then(response => response.json())
             .then(data => {
+                // Eğer bot çalışıyorsa sağ alttaki bilgi panelini gösteriyoruz
                 if(data.calisiyor) {
                     botStatusWin.style.display = 'flex';
                     botMsg.textContent = data.mesaj || "Bot çalışıyor...";
-                    wasRunning = true;
+                    wasRunning = true; // Çalıştığını kaydet
                 } else {
+                    // Bot çalışmıyorsa bilgi panelini gizliyoruz
                     botStatusWin.style.display = 'none';
+                    // Eğer az önce çalışıyorsa (wasRunning true ise) ve artık çalışmıyorsa
+                    // yeni taranan ilanların ekranda belirmesi için sayfayı otomatik yeniliyoruz
                     if (wasRunning) {
                         window.location.reload();
                     }
@@ -613,8 +695,9 @@
             .catch(err => console.error("Status check failed", err));
     }
 
+    // Her 2.5 saniyede bir checkBotStatus fonksiyonunu arka planda çalıştırıyoruz
     setInterval(checkBotStatus, 2500);
-    checkBotStatus(); 
+    checkBotStatus(); // Sayfa açılır açılmaz ilk kontrolü yap
 </script>
 </body>
 </html>
