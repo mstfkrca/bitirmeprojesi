@@ -48,12 +48,8 @@ pip install -r requirements.txt
 
 > **Not:** SeleniumBase kütüphanesinin sorunsuz bir şekilde webi tarayabilmesi için bilgisayarınızda Chromium tabanlı bir tarayıcı (Brave, Chrome veya Edge) bulunması gerekmektedir. 
 
-### 2. Tarayıcı Ayarı (Önemli Not!)
-Bot, bot kalkanlarını aşma performansı daha yüksek olduğundan dolayı varsayılan olarak kaynak kodlarda **Brave Browser** aramaya ayarlıdır.
-Eğer sisteminizde *Brave yerine standart Google Chrome vb. yüklüyse*, uygulamanın çökmemesi için `scraper.py` dosyasını bir kod editörüyle açın ve şu ufak ayarı yapın:
-
-- Yaklaşık 94. satırdaki `BRAVE_PATH` satırını silin veya kendi Google Chrome EXE adresinizi (`C:\Program Files\Google\Chrome\Application\chrome.exe` gibi) girin.
-- Dilerseniz 98. satırdaki `, binary_location=BRAVE_PATH` ibaresini tamamen silerseniz SeleniumBase varsayılanı (Chrome'u) kendisi bulmayı deneyecektir.
+### 2. Tarayıcı Ayarı
+Projede yer alan bot, SeleniumBase'in akıllı tespit aşma (Undetected ChromeDriver) yeteneğini kullanarak çalışır. Sisteminizde varsayılan olarak Chrome veya Edge tarayıcılarından birinin yüklü olması yeterlidir. Ek bir ayar veya dosya yolu belirtmenize gerek yoktur; bot otomatik olarak uygun tarayıcıyı bulacaktır.
 
 ### 3. Uygulamayı Başlatın
 Sistemin veritabanı ön hazırlığı siz uğraşmadan `app.py` tetiklendiği an otomatik olarak gerçekleşir, tablolar yoksa kendi kurulur.
@@ -63,10 +59,10 @@ Her şeyi başlatmak için terminale gelin:
 python app.py
 ```
 
-Ekranda `Running on http://127.0.0.1:8080` bilgisini gördüğünüzde sisteminiz çalışıyor demektir. (Proje portu varsayılan 5000 çakışmalarını önlemek adına 8080 olarak atanmıştır).
+Ekranda `Running on http://127.0.0.1:5000` bilgisini gördüğünüzde sisteminiz çalışıyor demektir. (Proje varsayılan Flask portu olan 5000 üzerinde çalışmaktadır).
 
 ### 4. Analiz ve Tarama Yapmak
-- Web tarayıcınızı açın ve adres çubuğuna **`http://localhost:8080`** yazarak panele girin.
+- Web tarayıcınızı açın ve adres çubuğuna **`http://localhost:5000`** yazarak panele girin.
 - Sahibinden web sitesi üzerinden dilediğiniz bir kategoriye (Örn: Trabzon Satılık Daire > Aydınlıkevler vs) girerek en üstteki arama sonucunun uzun URL'sini kopyalayın.
 - İnteraktif paneldeki **Sahibinden URL'si** kutusuna bu URL'yi yapıştırıp hedef limite ulaştıktan sonra **"Botu Başlat"** butonuna basın.
 
@@ -77,4 +73,4 @@ Sayfayı kapatmadan arkanıza yaslanın ve ekranın sağ altında açılan durum
 ## 🧹 Veritabanını Nasıl Temizlerim?
 Eski arşivleri, yer kaplayan ilanları, klasörde kalmış fotoğrafları ve yorulan veritabanı yığınını silmek isterseniz sol panelin altında yer alan (Tehlikeli Bölge tabındaki) **"Tüm Arşivi Yok Et"** butonunu kullanabilirsiniz. İşlem anında her şeyi tamamen geri dönülemeyecek şekilde boşaltıp yeni görevlere hazır hale getirir.
 
-> **Yasal Uyarı:** Bu proje açık kaynak topluluğuna katkı, veri bilimi tecrübesi, eğitim ve araştırma amaçlı bir konsept çalışmasıdır. Lütfen verileri izinli ve etik kurallar çerçevesinde, ticari kazanç hedeflemeden kullanınız. Oluşabilecek bot bloklamaları veya erişim kısıtlamaları site politikalarına aittir.
+> **Yasal Uyarı:** Bu proje tamamen bir **laboratuvar / bitirme projesi (eğitim ve araştırma) amaçlı** bir konsept çalışmasıdır. Kesinlikle ticari bir amaç gütmemektedir. Kaynak kodların kullanımı sonucunda oluşabilecek veri çekme (scraping) kısıtlamaları, bot bloklamaları, IP engellemeleri veya olası herhangi bir yasal ihlalden **hiçbir yasal sorumluluk kabul edilmemektedir**. Lütfen verileri etik kurallar çerçevesinde ve ilgili sitelerin kullanım şartlarına uygun şekilde kullanınız.

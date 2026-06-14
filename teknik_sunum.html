@@ -135,7 +135,7 @@
         </div>
         <div class="gc col">
             <div class="gc-t">🗄️ Veri Erişim Katmanı (database.py)</div>
-            <div class="gc-d">SQLite veritabanı şemasını tanımlar ve otomatik oluşturur. 30 sütunluk ilişkisel tablo yapısı. <code>ilan_no TEXT UNIQUE</code> ile duplikasyon kontrolü.</div>
+            <div class="gc-d">SQLite veritabanı şemasını tanımlar ve otomatik oluşturur. 32 sütunluk ilişkisel tablo yapısı. <code>ilan_no TEXT UNIQUE</code> ile duplikasyon kontrolü.</div>
         </div>
     </div>
     <div class="sn">02 / 10</div>
@@ -167,7 +167,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(<span class="kw">__file__</span>))
             ilan_tarihi TEXT, emlak_tipi TEXT,
             m2_brut TEXT, m2_net TEXT, oda_sayisi TEXT,
             bina_yasi TEXT, bulundugu_kat TEXT,
-            ...                   </span><span class="cm">-- Toplam 30 sütun</span><span class="st">
+            ...                   </span><span class="cm">-- Toplam 32 sütun</span><span class="st">
             tarih DATETIME DEFAULT CURRENT_TIMESTAMP
         )
     """</span>)
@@ -257,7 +257,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(<span class="kw">__file__</span>))
     <span class="st">"m² (Brüt)"</span>:     <span class="st">"m2_brut"</span>,
     <span class="st">"Oda Sayısı"</span>:     <span class="st">"oda_sayisi"</span>,
     <span class="st">"Bina Yaşı"</span>:      <span class="st">"bina_yasi"</span>,
-    ...                <span class="cm"># 24 alan daha</span>
+    ...                <span class="cm"># Toplam 24 alan</span>
 }
 
 <span class="cm"># Varsayılan değerlerle veri paketini hazırla</span>
@@ -362,9 +362,9 @@ MAX_SAYFA = (limit // <span class="num">20</span>) + <span class="num">1</span>
 query_conditions = <span class="st">"1=1"</span>    <span class="cm"># Her zaman doğru — base koşul</span>
 params = []
 
-<span class="kw">if</span> lokasyon_filtre:
-    query_conditions += <span class="st">" AND lokasyon = ?"</span>
-    params.append(lokasyon_filtre)  <span class="cm"># Parameterized!</span>
+<span class="kw">if</span> il_filtre:
+    query_conditions += <span class="st">" AND lokasyon LIKE ?"</span>
+    params.append(f<span class="st">"{il_filtre}/%"</span>)  <span class="cm"># Parameterized!</span>
 
 <span class="kw">if</span> fiyat_araligi == <span class="st">"2M-5M"</span>:
     query_conditions += <span class="st">""" AND CAST(
